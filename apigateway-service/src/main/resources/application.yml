@@ -30,3 +30,9 @@ spring:
 #            - AddRequestHeader=second-request, second-request-header-yml
 #            - AddResponseHeader=second-response, second-response-header-yml
             - CustomFilter
+      default-filters:
+        - name: GlobalFilter
+          args:
+            baseMessage: Spring Cloud Gateway Global Filter
+            preLogger: true
+            postLogger: true
