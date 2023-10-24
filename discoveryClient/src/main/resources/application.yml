@@ -1,5 +1,5 @@
 server:
-  port: 0 # ???? ??
+  port: 0 # 랜덤포트 사용
 
 spring:
   application:
@@ -7,7 +7,7 @@ spring:
 
 eureka:
   instance:
-    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}} #????
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}} #이름구분
   client:
     register-with-eureka: true
     fetch-registry: true
