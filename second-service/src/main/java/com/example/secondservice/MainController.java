@@ -18,4 +18,9 @@ public class MainController {
     public String message(@RequestHeader("second-request") String header) {
         return header;
     }
+
+    @GetMapping("/check")
+    public String check() {
+        return "hi second custom filter";
+    }
 }

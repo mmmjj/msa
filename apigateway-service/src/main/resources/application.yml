@@ -19,12 +19,14 @@ spring:
           predicates: # 라우트 조건절 같은
             - Path=/first-service/**
           filters:
-            - AddRequestHeader=first-request, first-request-header-yml
-            - AddResponseHeader=first-response, first-response-header-yml
+#            - AddRequestHeader=first-request, first-request-header-yml
+#            - AddResponseHeader=first-response, first-response-header-yml
+            - CustomFilter
         - id: second-service
           uri: http://127.0.0.1:8082/
           predicates:
             - Path=/second-service/**
           filters:
-            - AddRequestHeader=second-request, second-request-header-yml
-            - AddResponseHeader=second-response, second-response-header-yml
+#            - AddRequestHeader=second-request, second-request-header-yml
+#            - AddResponseHeader=second-response, second-response-header-yml
+            - CustomFilter
