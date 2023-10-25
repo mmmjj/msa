@@ -1,13 +1,27 @@
 package com.example.secondservice;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/second-service")
+@Slf4j
 public class MainController {
+
+    //yml에서 설정한 변수가져오기
+    Environment env;
+
+    @Autowired
+    public MainController(Environment env) {
+        this.env = env;
+    }
 
     @GetMapping("/welcome")
     public String selcome() {
@@ -20,7 +34,9 @@ public class MainController {
     }
 
     @GetMapping("/check")
-    public String check() {
-        return "hi second custom filter";
+    public String check(HttpServletRequest request) {
+        log.info("Server prot={}", request.getServerPort());
+        return String.format("hi second custom filter PORT = %s"
+                , env.getProperty("local.server.port"));
     }
 }
