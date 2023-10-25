@@ -15,7 +15,7 @@ spring:
     gateway:
       routes: # 라우트정보 리스트로 추가 가능
         - id: first-service
-          uri: http://127.0.0.1:8081/ # path가 붙음 http://127.0.0.1:8000/first-service/welcome -> http://127.0.0.1:8081/first-service/welcome
+          uri: lb://MY-FIRST-SERVICE # path가 붙음 http://127.0.0.1:8000/first-service/welcome -> http://127.0.0.1:8081/first-service/welcome
           predicates: # 라우트 조건절 같은
             - Path=/first-service/**
           filters:
@@ -23,7 +23,7 @@ spring:
 #            - AddResponseHeader=first-response, first-response-header-yml
             - CustomFilter
         - id: second-service
-          uri: http://127.0.0.1:8082/
+          uri: lb://MY-SECOND-SERVICE
           predicates:
             - Path=/second-service/**
           filters:
