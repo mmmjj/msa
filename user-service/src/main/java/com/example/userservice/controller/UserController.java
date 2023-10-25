@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/user-service")
 public class UserController {
 
     //autowire말고 생성자로주입하기
@@ -33,7 +33,9 @@ public class UserController {
 
     @GetMapping("/health_check")
     public String status() {
-        return "it work";
+        return String.format("it work port = %s"
+                , env.getProperty("local.server.port")
+        );
     }
 
     @GetMapping("/welcome")
