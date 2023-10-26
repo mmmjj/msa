@@ -14,7 +14,7 @@ public class CatalogEntity implements
         Serializable {//직렬화 추가 TODO 뭐지..
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 120, unique = true)

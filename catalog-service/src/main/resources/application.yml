@@ -18,6 +18,10 @@ spring:
       hibernate:
         format_sql: true
     database: h2
+    defer-datasource-initialization: true # 자동생성
+  sql:
+    init:
+      mode: always # 자동생성
 
 eureka:
   instance:
