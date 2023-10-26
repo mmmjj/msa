@@ -14,6 +14,10 @@ spring:
   cloud:
     gateway:
       routes: # 라우트정보 리스트로 추가 가능
+        - id: catalog-service
+          uri: lb://CATALOG-SERVICE
+          predicates:
+            - Path=/catalog-service/**
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
