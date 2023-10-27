@@ -41,7 +41,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     private AuthenticationFilter getAuthenticationFilter() throws Exception {
         //인증처리할것, sSec에 매니저사용
-        AuthenticationFilter authenticationFilter = new AuthenticationFilter();
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(
+                authenticationManager()
+                , userService
+                , env
+        );
         authenticationFilter.setAuthenticationManager(authenticationManager());
 
         return authenticationFilter;

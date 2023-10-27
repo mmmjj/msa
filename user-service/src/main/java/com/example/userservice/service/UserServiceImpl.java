@@ -82,4 +82,14 @@ public class UserServiceImpl implements UserService{
         });
         return responseUserList;
     }
+
+    @Override
+    public UserDto getUserDetailsByEmail(String email) {
+        UserEntity userEntity = userRepository.findByEmail(email);
+        //data null체크
+        if(userEntity == null) throw new UsernameNotFoundException("존재하지않아요");
+        UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
+
+        return userDto;
+    }
 }
