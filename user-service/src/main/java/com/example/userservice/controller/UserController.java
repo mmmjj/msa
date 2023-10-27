@@ -6,6 +6,7 @@ import com.example.userservice.service.UserService;
 import com.example.userservice.vo.Greeting;
 import com.example.userservice.vo.RequestUser;
 import com.example.userservice.vo.ResponseUser;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user-service")
+@RequestMapping("/")
+@Slf4j
 public class UserController {
 
     //autowire말고 생성자로주입하기
@@ -37,6 +39,7 @@ public class UserController {
 
     @GetMapping("/health_check")
     public String status() {
+        log.info("/health_check");
         return String.format("it work port = %s"
                 , env.getProperty("local.server.port")
         );
@@ -44,12 +47,14 @@ public class UserController {
 
     @GetMapping("/welcome")
     public String welcome() {
+        log.info("/welcome");
 //        return env.getProperty("greeting.message");
         return greeting.getMessage();
     }
 
     @PostMapping("/users")
     public ResponseEntity<ResponseUser> createUser(@RequestBody RequestUser user) {
+        log.info("/users");
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         UserDto dto = mapper.map(user, UserDto.class);
@@ -63,6 +68,7 @@ public class UserController {
 
     @GetMapping("users")
     public ResponseEntity<List<ResponseUser>> getUser() {
+        log.info("/users");
         List<ResponseUser> userList = userService.getUserByAll();
 
         return ResponseEntity.status(HttpStatus.OK).body(userList);
@@ -70,6 +76,7 @@ public class UserController {
 
     @GetMapping("users/{userId}")
     public ResponseEntity<ResponseUser> getUser(@PathVariable("userId") String userId) {
+        log.info("/users/userId");
         ResponseUser userList = userService.getUserByUserId(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(userList);

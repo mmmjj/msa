@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
@@ -29,10 +28,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                     new UsernamePasswordAuthenticationToken(
                             requestLogin.getEmail(), 
                             requestLogin.getPassword(), 
-                            new ArrayList<>())        
+                            new ArrayList<>())
             );
-            
-            
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -49,6 +47,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
      */
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        super.successfulAuthentication(request, response, chain, authResult);
+//        super.successfulAuthentication(request, response, chain, authResult);
     }
 }

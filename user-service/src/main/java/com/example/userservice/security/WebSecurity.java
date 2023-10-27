@@ -1,7 +1,7 @@
 package com.example.userservice.security;
 
 import com.example.userservice.service.UserService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,20 +10,28 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import javax.servlet.Filter;
-
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurity extends WebSecurityConfigurerAdapter {
+
+    private final UserService userService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final Environment env;
 
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();//비활성화
-//        http.authorizeRequests().antMatchers("/users/**").permitAll();//인증작업없이 사용할수있는범위
+        //인증작업없이 사용할수있는범위
+//        http.authorizeRequests().antMatchers("/users/**").permitAll();
+        http.authorizeRequests().antMatchers("/actuator/**").permitAll();
+        http.authorizeRequests().antMatchers("/health_check/**").permitAll();
         //인증된상태에서만 허용
-        http.authorizeRequests().antMatchers("/**")//모든api
-                .hasIpAddress("127.0.0.1")//ip제한
+        http.authorizeRequests()
+                .antMatchers("/error/**").permitAll() // public abstract java.lang.String javax.servlet.ServletRequest.getRemoteAddr() is not supported 보기 싫을때 활성화 https://www.inflearn.com/chats/789887
+                .antMatchers("/**")//모든api
+                .hasIpAddress("192.168.35.112")//ip제한
                 .and()
                 .addFilter(getAuthenticationFilter());//필터통과된것만
 
@@ -38,4 +46,13 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
         return authenticationFilter;
     }
+
+    //인증처리매서드
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        //select pwd from user...
+        auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder);
+    }
+
+
 }
