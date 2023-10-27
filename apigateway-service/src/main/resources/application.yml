@@ -2,6 +2,8 @@ server:
   port: 8000
 
 eureka:
+  instance:
+    prefer-ip-address: true
   client:
     register-with-eureka: true
     fetch-registry: true
@@ -14,6 +16,51 @@ spring:
   cloud:
     gateway:
       routes: # 라우트정보 리스트로 추가 가능
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/login
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}   # rewrite - path를다시잡는것
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/users
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/actuator/**
+            - Method=GET,POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/welcome
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+#        - id: user-service
+#          uri: lb://USER-SERVICE
+#          predicates:
+#            - Path=/user-service/**
         - id: order-service
           uri: lb://ORDER-SERVICE
           predicates:
@@ -22,10 +69,6 @@ spring:
           uri: lb://CATALOG-SERVICE
           predicates:
             - Path=/catalog-service/**
-        - id: user-service
-          uri: lb://USER-SERVICE
-          predicates:
-            - Path=/user-service/**
         - id: first-service
           uri: lb://MY-FIRST-SERVICE # path가 붙음 http://127.0.0.1:8000/first-service/welcome -> http://127.0.0.1:8081/first-service/welcome
           predicates: # 라우트 조건절 같은
@@ -53,3 +96,6 @@ spring:
             baseMessage: Spring Cloud Gateway Global Filter
             preLogger: true
             postLogger: true
+
+token:
+  secret: my_token
