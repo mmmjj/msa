@@ -17,7 +17,7 @@ spring:
         git:
           uri: https://github.com/mmmjj/msa-config
         native:
-          search-locations: file:///D:/mmmj/workspace/gitworkspace/msa_config_native
+          search-locations: file:///${user.home}/msa_config_native
 #          uri: file://D:/locate/msa_config
 management:
   endpoints:
