@@ -42,6 +42,6 @@ greeting:
 #    com.example: debug
 #    org.springframework: debug
 
-token:
-  expiration_time: 86400000 #1일
-  secret: my_token
+#token:
+#  expiration_time: 86400000 #1일
+#  secret: my_token
