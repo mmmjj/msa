@@ -32,7 +32,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
-        - id: user-service
+        - id: user-service # actuator 추가 post는 refresh 나머지 get
           uri: lb://USER-SERVICE
           predicates:
             - Path=/user-service/actuator/**
@@ -99,3 +99,9 @@ spring:
 
 token:
   secret: my_token
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, httptrace
