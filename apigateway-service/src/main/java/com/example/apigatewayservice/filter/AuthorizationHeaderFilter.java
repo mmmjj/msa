@@ -60,7 +60,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     private boolean isJwtValid(String jwt) {
         boolean is = false;
         String subject = null;
-
+        log.info("+++++++++++++++++++++++++++++" + env.getProperty("token.secret"));
         try {
             subject = Jwts.parser()
                     .setSigningKey(env.getProperty("token.secret"))//token생성시 사용한 키
