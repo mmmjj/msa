@@ -25,7 +25,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http.csrf().disable();//비활성화
         //인증작업없이 사용할수있는범위
 //        http.authorizeRequests().antMatchers("/users/**").permitAll();
-        http.authorizeRequests().antMatchers("/actuator/**").permitAll();
+        http.authorizeRequests().antMatchers("/actuator/**").permitAll(); //actuator 필터 추가 refresh,beans,env 등등
         http.authorizeRequests().antMatchers("/health_check/**").permitAll();
         //인증된상태에서만 허용
         http.authorizeRequests()
