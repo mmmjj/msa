@@ -33,7 +33,7 @@
             <artifactId>spring-cloud-starter-bus-amqp</artifactId>
         </dependency>
 
-        <!--부트스트랩 자동갱신을 위한 lib 추가-->
+        <!--부트스트랩 자동갱신을 위한 lib 추가, 대칭키암호화-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-bootstrap</artifactId>

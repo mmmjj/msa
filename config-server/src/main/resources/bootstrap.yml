@@ -1,0 +1,3 @@
+encrypt:
+  key: abcdefghijklmnopqrstuvwxyz0123456789 #encrypt, decrypt 할때 사용
+

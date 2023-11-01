@@ -2,6 +2,6 @@ spring:
   cloud:
     config:
       uri: http://127.0.0.1:8888
-      name: config-service #config server의 application.yml
+      name: user-service.yml
 #  profiles:
 #    active: dev
