@@ -1,5 +1,6 @@
 package com.example.userservice.service;
 
+import com.example.userservice.client.OrderServiceClient;
 import com.example.userservice.dto.UserDto;
 import com.example.userservice.jpa.UserEntity;
 import com.example.userservice.jpa.UserRepository;
@@ -8,10 +9,7 @@ import com.example.userservice.vo.ResponseUser;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,6 +31,8 @@ public class UserServiceImpl implements UserService{
     Environment env;
     RestTemplate restTemplate;
 
+    OrderServiceClient orderServiceClient;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity userEntity = userRepository.findByEmail(username);
@@ -49,11 +49,13 @@ public class UserServiceImpl implements UserService{
                            , BCryptPasswordEncoder passwordEncoder
                            , Environment env
                            , RestTemplate restTemplate
+                           , OrderServiceClient orderServiceClient
     ) { //생성자를 통해서 주입하는게 왜 더 좋지..
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.env = env;
         this.restTemplate = restTemplate;
+        this.orderServiceClient = orderServiceClient;
     }
 
     @Override
@@ -81,13 +83,16 @@ public class UserServiceImpl implements UserService{
 
         /*List<ResponseOrder> orders = new ArrayList<>();*/
         //rest template 사용해서 주문정보 가져오기
-        String orderUrl = String.format(env.getProperty("order_service.url"), userId); //http://127.0.0.1:8000/order-service/%s/orders
+        /*String orderUrl = String.format(env.getProperty("order_service.url"), userId); //http://127.0.0.1:8000/order-service/%s/orders
         //ResponseEntity<List<ResponseOreder>> order get return type
         ResponseEntity<List<ResponseOrder>> orderListResponse = restTemplate.exchange(orderUrl, HttpMethod.GET
                 , null //request param
                 , new ParameterizedTypeReference<List<ResponseOrder>>() {
                 });
-        List<ResponseOrder> orderList = orderListResponse.getBody();
+        List<ResponseOrder> orderList = orderListResponse.getBody();*/
+
+        //feign client 사용
+        List<ResponseOrder> orderList = orderServiceClient.getOrders(userId);
 
         userDto.setOrders(orderList);
 
