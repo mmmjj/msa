@@ -23,6 +23,12 @@ public class OrderController {
 
     OrderService orderService;
 
+    /**
+     * 주문추가
+     * @param userId
+     * @param orderDetails
+     * @return
+     */
     @PostMapping("/{userId}/orders")
     public ResponseEntity<ResponseOreder> createOrder(@PathVariable String userId,
                                       @RequestBody RequestOrder orderDetails) {
@@ -37,6 +43,11 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(createDto, ResponseOreder.class));
     }
 
+    /**
+     * 주문조회
+     * @param userId
+     * @return
+     */
     @GetMapping("/{userId}/orders")
     public ResponseEntity<List<ResponseOreder>> getOrder(@PathVariable String userId) {
         Iterable<OrderEntity> orderEntities = orderService.getOrderByUserId(userId);

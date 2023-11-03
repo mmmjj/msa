@@ -45,6 +45,7 @@ public class UserController {
                 + ", port(server.port) = " + env.getProperty("server.port")
                 + ", token key = " + env.getProperty("token.secret")
                 + ", token expiration time= " + env.getProperty("token.expiration_time")
+                + ", token expiration time= " + env.getProperty("order_service.url"), "test"
         );
     }
 

@@ -8,11 +8,16 @@ import com.example.userservice.vo.ResponseUser;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +29,9 @@ public class UserServiceImpl implements UserService{
 //    @Autowired
     UserRepository userRepository;
     BCryptPasswordEncoder passwordEncoder;
+
+    Environment env;
+    RestTemplate restTemplate;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -38,9 +46,14 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository
-                            , BCryptPasswordEncoder passwordEncoder) { //생성자를 통해서 주입하는게 왜 더 좋지..
+                           , BCryptPasswordEncoder passwordEncoder
+                           , Environment env
+                           , RestTemplate restTemplate
+    ) { //생성자를 통해서 주입하는게 왜 더 좋지..
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.env = env;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -62,12 +75,21 @@ public class UserServiceImpl implements UserService{
     public ResponseUser getUserByUserId(String userId) {
         UserEntity userEntity = userRepository.findByUserId(userId);
 
-        if(userEntity == null) throw  new UsernameNotFoundException("");
+        if(userEntity == null) throw new UsernameNotFoundException("");
 
         ResponseUser userDto = new ModelMapper().map(userEntity, ResponseUser.class);
 
-        List<ResponseOrder> orders = new ArrayList<>();
-        userDto.setOrders(orders);
+        /*List<ResponseOrder> orders = new ArrayList<>();*/
+        //rest template 사용해서 주문정보 가져오기
+        String orderUrl = String.format(env.getProperty("order_service.url"), userId); //http://127.0.0.1:8000/order-service/%s/orders
+        //ResponseEntity<List<ResponseOreder>> order get return type
+        ResponseEntity<List<ResponseOrder>> orderListResponse = restTemplate.exchange(orderUrl, HttpMethod.GET
+                , null //request param
+                , new ParameterizedTypeReference<List<ResponseOrder>>() {
+                });
+        List<ResponseOrder> orderList = orderListResponse.getBody();
+
+        userDto.setOrders(orderList);
 
         return userDto;
     }

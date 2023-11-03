@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableDiscoveryClient //유레카서버에 등록준비
@@ -17,5 +18,14 @@ public class UserServiceApplication {
     @Bean//service impl에서 사용하기위해 bean선언
     public BCryptPasswordEncoder beanBcryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * resttemplate 주입
+     * @return
+     */
+    @Bean
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
     }
 }

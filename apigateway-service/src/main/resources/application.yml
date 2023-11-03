@@ -66,7 +66,7 @@ spring:
 #          uri: lb://USER-SERVICE
 #          predicates:
 #            - Path=/user-service/**
-        - id: order-service
+        - id: order-service # 주문ms
           uri: lb://ORDER-SERVICE
           predicates:
             - Path=/order-service/**
