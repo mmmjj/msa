@@ -2,6 +2,7 @@ package com.example.orderservice.controller;
 
 import com.example.orderservice.dto.OrderDto;
 import com.example.orderservice.jpa.OrderEntity;
+import com.example.orderservice.messagequeue.KafkaProducer;
 import com.example.orderservice.service.OrderService;
 import com.example.orderservice.vo.RequestOrder;
 import com.example.orderservice.vo.ResponseOreder;
@@ -22,6 +23,7 @@ import java.util.List;
 public class OrderController {
 
     OrderService orderService;
+    KafkaProducer kafkaProducer;
 
     /**
      * 주문추가
@@ -39,6 +41,10 @@ public class OrderController {
         OrderDto orderDto = modelMapper.map(orderDetails, OrderDto.class);
         orderDto.setUserId(userId);
         OrderDto createDto = orderService.createOrder(orderDto);
+
+        //프로듀서사용 kafka에 주문 정보 추가하기
+        kafkaProducer.send("example-catalog-topic", orderDto);
+
 
         return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(createDto, ResponseOreder.class));
     }
@@ -60,4 +66,8 @@ public class OrderController {
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
+    /**
+     * 주문 추가할때 호출하는 producer api
+     */
 }
