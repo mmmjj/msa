@@ -3,6 +3,7 @@ package com.example.orderservice.controller;
 import com.example.orderservice.dto.OrderDto;
 import com.example.orderservice.jpa.OrderEntity;
 import com.example.orderservice.messagequeue.KafkaProducer;
+import com.example.orderservice.messagequeue.OrderProducer;
 import com.example.orderservice.service.OrderService;
 import com.example.orderservice.vo.RequestOrder;
 import com.example.orderservice.vo.ResponseOreder;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.ws.rs.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("order-service")
@@ -24,6 +26,7 @@ public class OrderController {
 
     OrderService orderService;
     KafkaProducer kafkaProducer;
+    OrderProducer orderProducer;
 
     /**
      * 주문추가
@@ -40,13 +43,19 @@ public class OrderController {
 
         OrderDto orderDto = modelMapper.map(orderDetails, OrderDto.class);
         orderDto.setUserId(userId);
-        OrderDto createDto = orderService.createOrder(orderDto);
+
+//        OrderDto createDto = orderService.createOrder(orderDto);
+        //kafka로 메세지 전달하기
+
+        orderDto.setOrderId(UUID.randomUUID().toString());
+        orderDto.setTotalPrice(orderDetails.getQty() * orderDetails.getUnitPrice());
 
         //프로듀서사용 kafka에 주문 정보 추가하기
         kafkaProducer.send("example-catalog-topic", orderDto);
+        orderProducer.send("orders", orderDto);
 
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(createDto, ResponseOreder.class));
+        return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(orderDto, ResponseOreder.class));
     }
 
     /**
