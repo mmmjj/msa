@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,6 +38,9 @@ public class UserServiceImpl implements UserService{
 
     OrderServiceClient orderServiceClient;
 
+    //trace
+    CircuitBreakerFactory circuitBreakerFactory;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity userEntity = userRepository.findByEmail(username);
@@ -53,12 +58,14 @@ public class UserServiceImpl implements UserService{
                            , Environment env
                            , RestTemplate restTemplate
                            , OrderServiceClient orderServiceClient
+                           , CircuitBreakerFactory circuitBreakerFactory
     ) { //생성자를 통해서 주입하는게 왜 더 좋지..
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.env = env;
         this.restTemplate = restTemplate;
         this.orderServiceClient = orderServiceClient;
+        this.circuitBreakerFactory = circuitBreakerFactory;
     }
 
     @Override
@@ -103,7 +110,15 @@ public class UserServiceImpl implements UserService{
         }*/
 
         //errordecode 사용
-        List<ResponseOrder> orderList = orderServiceClient.getOrders(userId);
+//        List<ResponseOrder> orderList = orderServiceClient.getOrders(userId);
+
+        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitbreaker");
+        List<ResponseOrder> orderList = circuitBreaker.run(
+                //orderservice호출하던것 그대로
+                () -> orderServiceClient.getOrders(userId),
+                //예외발생시
+                throwable -> new ArrayList<>() //비어있는리스트반환
+                );
 
         userDto.setOrders(orderList);
 
