@@ -33,6 +33,7 @@ spring:
 eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    prefer-ip-address: true
   client:
     register-with-eureka: true
     fetch-registry: true
@@ -42,3 +43,8 @@ logging:
   level:
     com.example.service: debug
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, httptrace, info, prometheus, metrics
