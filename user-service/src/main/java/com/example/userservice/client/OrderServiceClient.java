@@ -15,6 +15,6 @@ public interface OrderServiceClient {
      * @param userId
      * @return
      */
-    @GetMapping("/order-service/{userId}/orders_fail")
+    @GetMapping("/order-service/{userId}/orders")
     List<ResponseOrder> getOrders(@PathVariable String userId);
 }
