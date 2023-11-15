@@ -112,6 +112,7 @@ public class UserServiceImpl implements UserService{
         //errordecode 사용
 //        List<ResponseOrder> orderList = orderServiceClient.getOrders(userId);
 
+        log.info("before call orders microservice");
         CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitbreaker");
         List<ResponseOrder> orderList = circuitBreaker.run(
                 //orderservice호출하던것 그대로
@@ -119,6 +120,7 @@ public class UserServiceImpl implements UserService{
                 //예외발생시
                 throwable -> new ArrayList<>() //비어있는리스트반환
                 );
+        log.info("after call orders microservice");
 
         userDto.setOrders(orderList);
 

@@ -8,6 +8,7 @@ import com.example.orderservice.service.OrderService;
 import com.example.orderservice.vo.RequestOrder;
 import com.example.orderservice.vo.ResponseOreder;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("order-service")
 @AllArgsConstructor
+@Slf4j
 public class OrderController {
 
     OrderService orderService;
@@ -37,7 +39,7 @@ public class OrderController {
     @PostMapping("/{userId}/orders")
     public ResponseEntity<ResponseOreder> createOrder(@PathVariable String userId,
                                       @RequestBody RequestOrder orderDetails) {
-
+        log.info("before add orders data");
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
@@ -61,7 +63,7 @@ public class OrderController {
 //        ResponseOreder responseOreder = modelMapper.map(orderDto, ResponseOreder.class);
         //kafka로 메세지 전달하기 끝
 
-
+        log.info("after add orders data");
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOreder);
     }
 
@@ -72,6 +74,8 @@ public class OrderController {
      */
     @GetMapping("/{userId}/orders")
     public ResponseEntity<List<ResponseOreder>> getOrder(@PathVariable String userId) {
+        log.info("before retrieve orders data");
+
         Iterable<OrderEntity> orderEntities = orderService.getOrderByUserId(userId);
 
         List<ResponseOreder> result = new ArrayList<>();
@@ -79,6 +83,15 @@ public class OrderController {
         orderEntities.forEach(v -> {
             result.add(modelMapper.map(v, ResponseOreder.class));
         });
+
+        try {
+            Thread.sleep(1000);
+            throw new Exception("장애 발생");
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+        }
+        log.info("after retrieve orders data");
+
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
