@@ -46,6 +46,7 @@ public class UserController {
                 + ", token key = " + env.getProperty("token.secret")
                 + ", token expiration time= " + env.getProperty("token.expiration_time")
                 + ", token expiration time= " + env.getProperty("order_service.url"), "test"
+                + env.getProperty("order_service.exception.orders_is_empty")
         );
     }
 
