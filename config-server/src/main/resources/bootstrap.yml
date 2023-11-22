@@ -1,6 +1,7 @@
 encrypt:
   key: abcdefghijklmnopqrstuvwxyz0123456789 #encrypt, decrypt 할때 사용
   key-store:
-    location: file:///${user.home}/msa/keystore/apiEncryptionKey.jks
+#    location: file:///${user.home}/msa/keystore/apiEncryptionKey.jks
+    location: file:/apiEncryptionKey.jks
     password: test1234
     alias: apiEncryptionKey
