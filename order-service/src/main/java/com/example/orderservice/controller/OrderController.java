@@ -56,7 +56,7 @@ public class OrderController {
 //        orderDto.setTotalPrice(orderDetails.getQty() * orderDetails.getUnitPrice());
 
         //프로듀서사용 kafka에 주문 정보 추가하기
-//        kafkaProducer.send("example-catalog-topic", orderDto);
+        kafkaProducer.send("example-catalog-topic", orderDto);
 //        orderProducer.send("orders", orderDto);
         
         //리턴바디
@@ -84,12 +84,12 @@ public class OrderController {
             result.add(modelMapper.map(v, ResponseOreder.class));
         });
 
-        try {
-            Thread.sleep(1000);
-            throw new Exception("장애 발생");
-        } catch (Exception e) {
-            log.warn(e.getMessage());
-        }
+//        try {
+//            Thread.sleep(1000);
+//            throw new Exception("장애 발생");
+//        } catch (Exception e) {
+//            log.warn(e.getMessage());
+//        }
         log.info("after retrieve orders data");
 
 
