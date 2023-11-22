@@ -26,7 +26,7 @@ public class KafkaConsumerConfig {
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> properties = new HashMap<>();
-        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.18.0.101:9092");
         //토픽에 쌓인 메시지를 가져가는 컨슈머들을 그룹핑할수있는데 특정 컨슈머그룹으로 전달하려는 id를 지정할수있다
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, "consumerGroupId"); // 컨슈머가 여러개이면 유용
         //키 역직렬화
