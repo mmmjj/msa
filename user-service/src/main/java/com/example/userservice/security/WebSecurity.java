@@ -31,7 +31,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/error/**").permitAll() // public abstract java.lang.String javax.servlet.ServletRequest.getRemoteAddr() is not supported 보기 싫을때 활성화 https://www.inflearn.com/chats/789887
                 .antMatchers("/**")//모든api
-                .hasIpAddress("192.168.35.112")//ip제한
+                .hasIpAddress(env.getProperty("gateway.ip"))
+//                .hasIpAddress("192.168.35.112")//ip제한
                 .and()
                 .addFilter(getAuthenticationFilter());//필터통과된것만
 
